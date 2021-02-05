@@ -11,7 +11,7 @@ export default ({ postId }) => {
     };
 
     return (
-        <div>
+        <div className="mt-2">
             <form onSubmit={onSubmit}>
                 <div className="form-group">
                     <label htmlFor="comment">New Comment</label>
