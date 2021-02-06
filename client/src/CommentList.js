@@ -9,7 +9,7 @@ const CommentList = ({ postId }) => {
    };
    useEffect(() => {
       fetchComments();
-   });
+   }, []);
 
    const renderedComments = Object.values(comments)
       .map(comment => {
