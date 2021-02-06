@@ -26,7 +26,6 @@ app.post("/events", async (req, res) => {
       const { id, content, postId, status } = data;
       const post = posts[postId];
       post.comments.push({ id, content, status });
-      console.log(id, content);
    }
 
    if (type === "CommentUpdated") {
