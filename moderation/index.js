@@ -1,5 +1,4 @@
 const express = require("express");
-const { randomBytes } = require("crypto");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 
@@ -8,12 +7,24 @@ app.use(bodyParser.json());
 
 app.post("/events", async (req, res) => {
    console.log("Received event", req.body.type);
-
    const { type, data } = req.body;
 
    if (type === "CommentCreated") {
-      // const { id, title } = data;
-      // posts[id] = { id, title, comments: [] };
+      const { id, content, postId } = data;
+
+      let moderationEvent =
+      {
+         type: "CommentModerated",
+         data: { id, postId, content }
+      };
+
+      if (content.includes("orange")) {
+         moderationEvent.data.status = "rejected";
+      } else {
+         moderationEvent.data.status = "approved";
+      }
+
+      await axios.post("http://localhost:4005/events", moderationEvent);
    }
 
    res.send({});

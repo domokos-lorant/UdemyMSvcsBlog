@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const { json } = require("express");
 
 const app = express();
 app.use(bodyParser.json());
@@ -13,6 +14,7 @@ app.get("/posts", (req, res) => {
 });
 
 app.post("/events", async (req, res) => {
+   console.log("Received event", req.body.type);
    const { type, data } = req.body;
 
    if (type === "PostCreated") {
@@ -21,10 +23,18 @@ app.post("/events", async (req, res) => {
    }
 
    if (type === "CommentCreated") {
-      const { id, content, postId } = data;
+      const { id, content, postId, status } = data;
       const post = posts[postId];
-      post.comments.push({ id, content });
+      post.comments.push({ id, content, status });
       console.log(id, content);
+   }
+
+   if (type === "CommentUpdated") {
+      const { id, postId, content, status } = data;
+      const post = posts[postId];
+      const comment = post.comments.find(comment => comment.id === id);
+      comment.content = content;
+      comment.status = status;
    }
 
    console.log(posts);
