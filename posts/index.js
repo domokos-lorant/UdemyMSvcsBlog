@@ -11,30 +11,30 @@ app.use(cors());
 const posts = {};
 
 app.get("/posts", (req, res) => {
-    res.send(posts);
+  res.send(posts);
 });
 
-app.post("/posts", async (req, res) => {
-    const id = randomBytes(4).toString("hex");
-    const { title } = req.body;
-    const post = { id, title };
-    posts[id] = post;
+app.post("/posts/create", async (req, res) => {
+  const id = randomBytes(4).toString("hex");
+  const { title } = req.body;
+  const post = { id, title };
+  posts[id] = post;
 
-    // Notify event bus.
-    await axios.post("http://localhost:4005/events", {
-        type: "PostCreated",
-        data: post
-    });
+  // Notify event bus.
+  await axios.post("http://event-bus-srv:4005/events", {
+    type: "PostCreated",
+    data: post,
+  });
 
-    res.status(201).send(posts[id]);
+  res.status(201).send(posts[id]);
 });
 
 app.post("/events", async (req, res) => {
-    console.log("Received event", req.body.type);
+  console.log("Received event", req.body.type);
 
-    res.send({});
+  res.send({});
 });
 
 app.listen(4000, () => {
-    console.log("Listening on port 4000");
+  console.log("Listening on port 4000");
 });
